@@ -28,50 +28,6 @@ oauth.register(
     }
 )
 
-@app.route('/')
-def homepage():
-    user = session.get('user')
-    return render_template('home.html', user=user)
-    
-
-@app.route('/login')
-def login():
-    redirect_uri = url_for('auth', _external=True)
-    return oauth.google.authorize_redirect(redirect_uri)
-
-
-@app.route('/auth')
-def auth():
-    token = oauth.google.authorize_access_token()
-    session['user'] = token['access_token']
-    return redirect('/')
-
-
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    return redirect('/')
-
-@app.route('/data')
-def datatesti():
-    datastore_client = google.cloud.datastore.Client() 
-
-    # Tallennettava tyyppi
-    kind = "Testi"
-    # id/nimi
-    name = "mallitietue3"
-    # Datastoren avain lisättävälle objektille
-    testi_key = datastore_client.key(kind, name)
-
-    # Varsinaisen objektin luominen
-    testi = google.cloud.datastore.Entity(key=testi_key) 
-    testi["kuvaus"] = "Testiteksti"
-
-    # Saves the entity
-    datastore_client.put(testi)
-
-    return f"Tallennettiin {testi.key.name}: {testi['kuvaus']}"
-
 #@app.route('/alustus')
 #def alustus():
 #    kilpailut = [
@@ -121,9 +77,7 @@ def kyselyt():
         laheta = request.form.get('laheta', "")
     except:
         laheta = ""
-
-
-
+        
     try:
         valitunSarjanNimi = ""
         if (laheta == "Lisää joukkue"):
@@ -143,8 +97,6 @@ def kyselyt():
     except:
         valitunKisanId = None
 
-
-
     try:
         edellinenKisa = int(request.form.get('edellinenKisa', ""))
     except:
@@ -160,9 +112,6 @@ def kyselyt():
 
     query = client.query(kind="Kilpailu")
     results = list( query.fetch() )
-
-
-
 
     if valitunSarjanNimi != "" and valitunKisanId != edellinenKisa:
         #valitunKisanId = None
@@ -214,10 +163,6 @@ def kyselyt():
             uudetJasenet.append(request.form.get('jasen'+str(i+1), ""))
         elif ekaTyhja == "":
             ekaTyhja = int(i+1)
-
-    #poista tää lopullisesta!!!!!!!!!!
-    
-
 
     try:
         uudenJoukkueenNimi = request.form.get('nimi', "")
@@ -324,10 +269,7 @@ def kyselyt():
     except:
         pass
 
-
-
     return render_template('index.html', errorit=errorit, lisaysilmoitus=lisaysilmoitus, laheta=laheta, edellinenKisa=edellinenKisa, edellinenSarja=edellinenSarja,valitunKisanNimi=valitunKisanNimi, vanhempiAvain=vanhempiAvain, vanhempiNimi=vanhempiNimi, vanhempi=vanhempi,kisat=kisat, sarjat=sarjat, valitunKisanId=valitunKisanId, form=form, testailu=testailu, valitunSarjanNimi=valitunSarjanNimi, lapsikey=lapsikey)
-
 
 @app.route('/listaus', methods=['GET', 'POST'])
 def listaus():
@@ -369,7 +311,6 @@ def listaus():
                 query.add_filter("sarja", "=", r["sarjanimi"])
                 results3 = list( query.fetch() )
 
-
                 joukkueet = []
 
                 try:
@@ -393,6 +334,5 @@ def listaus():
         kisa["sarjat"] = sarjat
         kisat.append(kisa)
         kisat = sorted(kisat, key=lambda d: d['alkuaika'].lower(), reverse=True) 
-    
 
     return render_template('listaus.html', kisat=kisat, sarjat=sarjat, joukkueet=joukkueet)
