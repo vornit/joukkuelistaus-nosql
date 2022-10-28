@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>Joku</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+
+  <h1>Listaus</h1>
+
+  <p>{{kisat}}</p>
+
+  <p>{{sarjat}}</p>
+  <p>{{joukkueet}}</p>
+
+  <ul>
+  {% for r in kisat %}
+  <li>{{r['nimi']}}
+  <ul>
+  {% for s in r['sarjat'] %}
+  <li>{{s['nimi']}}
+  <ul>
+  {% for t in s['joukkueet'] %}
+  <li>{{t['nimi']}}
+  
+  <ul>
+  {% for x in t['jäsenet'] %}
+  <li>{{x}}</li>
+  {%endfor%}
+  </ul>
+  </li>
+
+  {%endfor%}
+  </ul>
+  </li>
+  {%endfor%}
+  </ul>
+  </li>
+  {%endfor%}
+  </ul>
+
+
+
+</body>
+</html>

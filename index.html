@@ -1,0 +1,69 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>Joukkueen lisäys</title>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <h1>Valittu joukkue: {{valitunKisanNimi}}</h1>
+  <h1>Valittu sarja: {{valitunSarjanNimi}}</h1>
+
+  {# ed kisa{{edellinenKisa}}
+  valittu kisa{{valitunKisanId}}
+  ed sarja {{edellinenSarja}}
+  valittu sarja{{valitunSarjanNimi}}
+  {{laheta}} #}
+
+  <form action="{{request.base_url}}" method="POST">
+  <input type="hidden" value="{{valitunKisanId}}" name="edellinenKisa" />
+  <input type="hidden" value="{{valitunSarjanNimi}}" name="edellinenSarja" />
+  <label for="kilpailut">Valitse kilpailu:</label>
+  <select name="kilpailut" id="asd">
+  <option disabled selected value> -- valitse kilpailu -- </option>
+  {% for x in kisat %}
+  {% if x['id'] == valitunKisanId %}
+  <option value="{{x['id']}}" selected="selected">{{x['nimi']}}</option>
+  {% else %}
+  <option value="{{x['id']}}">{{x['nimi']}}</option>
+  {% endif %}
+  {% endfor %}
+  </select> 
+  <p><input type="submit" name="laheta" value="Valitse kilpailu"/></p>
+
+  {% if valitunKisanId != None %}
+  <label for="sarjat">Valitse joukkue:</label>
+  <select name="sarjat" id="asd">
+    <option disabled selected value> -- valitse sarja -- </option>
+  {% for x in sarjat %}
+  {% if x['nimi'] == valitunSarjanNimi %}
+  <option value="{{x['nimi']}}" selected="selected">{{x['nimi']}}</option>
+  {% else %}
+  <option value="{{x['nimi']}}">{{x['nimi']}}</option>
+  {% endif %}
+  {% endfor %}
+  </select>
+  <p><input type="submit" name="laheta" value="Valitse sarja"/></p>
+  {% endif %}
+
+  {% if valitunSarjanNimi|length != 0 %}
+  <div>
+  <div class="tietokentta"><p>{{form.nimi.label}}{{ form.nimi }}</p><p class="lisaysilmoitus">{{lisaysilmoitus}}</p><p class="virhe">{% for error in form.nimi.errors %} {{ error|e }} {% endfor %}</p></div>
+  <div class="tietokentta"><p>{{form.jasen1.label}}{{ form.jasen1 }}</p><p class="virhe">{% for error in form.jasen1.errors %} {{ error|e }} {% endfor %}</p></div>
+  <div class="tietokentta"><p>{{form.jasen2.label}}{{ form.jasen2 }}</p><p class="virhe">{% for error in form.jasen2.errors %} {{ error|e }} {% endfor %}</p></div>
+  <div class="tietokentta"><p>{{form.jasen3.label}}{{ form.jasen3 }}</p><p class="virhe">{% for error in form.jasen3.errors %} {{ error|e }} {% endfor %}</p></div>
+  <div class="tietokentta"><p>{{form.jasen4.label}}{{ form.jasen4 }}</p><p class="virhe">{% for error in form.jasen4.errors %} {{ error|e }} {% endfor %}</p></div>
+  <div class="tietokentta"><p>{{form.jasen5.label}}{{ form.jasen5 }}</p><p class="virhe">{% for error in form.jasen5.errors %} {{ error|e }} {% endfor %}</p></div>
+  </div>
+  <p><input type="submit" name="laheta" value="Lisää joukkue"/></p>
+  {% endif %}
+  </form>
+
+  {{errorit}}
+
+
+
+</body>
+</html>
